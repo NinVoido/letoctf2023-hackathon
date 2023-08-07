@@ -4,7 +4,6 @@ import requests
 
 app = FastAPI()
 letoctf_api = "http://192.168.14.39:8000/api/v1"
-key = "GoAway"
 
 @app.get("/api/v1/user/token/{token}")
 async def login(token: str):
