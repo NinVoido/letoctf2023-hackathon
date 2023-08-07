@@ -15,7 +15,7 @@ async def login(token: str):
         return HTTPException(status_code=401)
 
 @app.get("/api/v1/challenge/{task_id}/submit")
-async def challenge(task_id: str):
+async def challenge_submit(task_id: str):
     """Submit task via task_id"""
     task = requests.get(f"{letoctf_api}/challenge/{task_id}/submit").json()
     return task
@@ -38,20 +38,20 @@ async def challenge(userId: str):
     return challenges
 
 @app.get("/api/v1/challenge/{task_id}")
-async def challenge(task_id: str):
+async def challenge_description(task_id: str):
     """Get task description by task_id"""
     task = requests.get(f"{letoctf_api}/challenge/{task_id}").json()
     return task
 
 @app.get("/api/v1/score/profile/{user_id}")
-async def score(user_id: str):
+async def profile(user_id: str):
     """Get user score by his id"""
     user_data = requests.get(f"{letoctf_api}/challenge/{user_id}").json()
     return user_data
 
 
 @app.get("/api/v1/scoreboard/users")
-async def score():
+async def score_users():
     """Return user scoreboard"""
     users = requests.get(f"{letoctf_api}/user").json()['data']['content']
     out = [{"name": user['name'], "data": []} for user in users if user['admin']==False]
@@ -66,7 +66,7 @@ async def score():
 
 
 @app.get("/api/v1/scoreboard/teams")
-async def score():
+async def score_teams():
     """Return team scoreboard"""
     teams = requests.get(f"{letoctf_api}/team").json()['data']['content']
     out = [{"name": team['name'], "data": []} for team in teams if team['admin']==False]
