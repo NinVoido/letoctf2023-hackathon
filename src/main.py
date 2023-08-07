@@ -164,38 +164,3 @@ async def get_user_score(user_id: str):
         # Обработка исключений при получении данных о пользователе
         pass
 
-@app.get("/api/v1/scoreboard/users")
-async def get_user_scoreboard():
-    """Return user scoreboard"""
-    try:
-        users = requests.get(f"{letoctf_api}/user").json()['data']['content']
-        out = [{"name": user['name'], "data": []} for user in users if not user['admin']]
-        users_id = [user['id'] for user in users if not user['admin']]
-
-        for i in range(len(users_id)):
-            user_data = requests.get(f"{letoctf_api}/score/user/{users_id[i]}/history").json()['data']['items']['content']
-            data = [{'x': i['submitted'], 'y': i['challenge']['weight']} for i in user_data]
-            out[i]["data"] = data
-
-        return out
-    except:
-        # Обработка исключений при получении данных о пользователе
-        pass
-
-@app.get("/api/v1/scoreboard/teams")
-async def get_team_scoreboard():
-    """Return team scoreboard"""
-    try:
-        teams = requests.get(f"{letoctf_api}/team").json()['data']['content']
-        out = [{"name": team['name'], "data": []} for team in teams if not team['admin']]
-        teams_id = [team['id'] for team in teams if not team['admin']]
-
-        for i in range(len(teams_id)):
-            team_data = requests.get(f"{letoctf_api}/score/team/{teams_id[i]}/history").json()['data']['items']['content']
-            data = [{'x': i['submitted'], 'y': i['challenge']['weight']} for i in team_data]
-            out[i]["data"] = data
-
-        return out
-    except:
-        # Обработка исключений при получении данных о командах
-        pass
