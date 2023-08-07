@@ -1,2 +1,4 @@
 *.md.backup
 .env
+.idea
+src/__pycache__
