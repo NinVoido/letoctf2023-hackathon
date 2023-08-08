@@ -6,27 +6,30 @@ app = FastAPI()
 letoctf_api = "http://192.168.14.39:8000/api/v1"
 
 @app.get("/api/v1/user/token/{token}")
-async def login(token: str):
+async def login(token: str, response: Response):
     """Get user token and send his id for login functionality"""
     try:
+        response.headers["Access-Control-Allow-Origin"] = "*"
         user = requests.get(f"{letoctf_api}/user/token/{token}").json()
         return {'id': user['data']['id']}
     except:
         return HTTPException(status_code=401)
 
 @app.get("/api/v1/challenge/{task_id}/submit")
-async def challenge_submit(task_id: str):
+async def challenge_submit(task_id: str, response: Response):
     """Submit task via task_id"""
     try:
+        response.headers["Access-Control-Allow-Origin"] = "*"
         task = requests.get(f"{letoctf_api}/challenge/{task_id}/submit").json()
         return task
     except:
         raise HTTPException(status_code=400, detail="Failed to submit challenge")
 
 @app.get("/api/v1/event")
-async def event(date: str = "2023-06-30"):
+async def event(date: str, response: Response):
     """Get all events from api by date"""
     try:
+        response.headers["Access-Control-Allow-Origin"] = "*"
         events = requests.get(f"{letoctf_api}/event?date={date}").json()
 
         for event in events['data']['content']:
@@ -38,36 +41,40 @@ async def event(date: str = "2023-06-30"):
         raise HTTPException(status_code=500, detail="Failed to fetch events")
 
 @app.get("/api/v1/challenge")
-async def challenge(userId: str):
+async def challenge(userId: str, response: Response):
     """Get challenges for user"""
     try:
+        response.headers["Access-Control-Allow-Origin"] = "*"
         challenges = requests.get(f"{letoctf_api}/challenge?userId={userId}").json()
         return challenges
     except:
         raise HTTPException(status_code=500, detail="Failed to fetch challenges")
 
 @app.get("/api/v1/challenge/{task_id}")
-async def challenge_description(task_id: str):
+async def challenge_description(task_id: str, response: Response):
     """Get task description by task_id"""
     try:
+        response.headers["Access-Control-Allow-Origin"] = "*"
         task = requests.get(f"{letoctf_api}/challenge/{task_id}").json()
         return task
     except:
         raise HTTPException(status_code=404, detail="Task not found")
 
 @app.get("/api/v1/score/profile/{user_id}")
-async def profile(user_id: str):
+async def profile(user_id: str, response: Response):
     """Get user score by his id"""
     try:
+        response.headers["Access-Control-Allow-Origin"] = "*"
         user_data = requests.get(f"{letoctf_api}/challenge/{user_id}").json()
         return user_data
     except:
         raise HTTPException(status_code=500, detail="Failed to fetch user profile")
 
 @app.get("/api/v1/user/token/{token}")
-async def admin_login(token):
+async def admin_login(token, response: Response):
     """Авторизация администратора с помощью токена"""
     try:
+        response.headers["Access-Control-Allow-Origin"] = "*"
         response = requests.get(f"{letoctf_api}/user/token/{token}")
         response.raise_for_status()
         admin = response.json()
@@ -76,9 +83,10 @@ async def admin_login(token):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
 @app.get("/api/v1/challenge/{task_id}")
-async def admin_get_challenge(task_id: str):
+async def admin_get_challenge(task_id: str, response: Response):
     """Получение описания задачи администратором по идентификатору"""
     try:
+        response.headers["Access-Control-Allow-Origin"] = "*"
         response = requests.get(f"{letoctf_api}/challenge/{task_id}")
         response.raise_for_status()
         challenge = response.json()
@@ -87,9 +95,10 @@ async def admin_get_challenge(task_id: str):
         raise HTTPException(status_code=404, detail="Challenge not found")
 
 @app.post("/api/v1/challenge")
-async def admin_create_challenge(challenge_data: dict):
+async def admin_create_challenge(challenge_data: dict, response: Response):
     """Создание новой задачи администратором"""
     try:
+        response.headers["Access-Control-Allow-Origin"] = "*"
         response = requests.post(f"{letoctf_api}/challenge", json=challenge_data)
         response.raise_for_status()
         created_challenge = response.json()
@@ -98,9 +107,10 @@ async def admin_create_challenge(challenge_data: dict):
         raise HTTPException(status_code=400, detail="Failed to create challenge")
 
 @app.put("/api/v1/challenge/{task_id}")
-async def admin_update_challenge(task_id: str, challenge_data: dict):
+async def admin_update_challenge(task_id: str, challenge_data: dict, response: Response):
     """Обновление задачи администратором по идентификатору"""
     try:
+        response.headers["Access-Control-Allow-Origin"] = "*"
         response = requests.put(f"{letoctf_api}/challenge/{task_id}", json=challenge_data)
         response.raise_for_status()
         updated_challenge = response.json()
@@ -109,9 +119,10 @@ async def admin_update_challenge(task_id: str, challenge_data: dict):
         raise HTTPException(status_code=400, detail="Failed to update challenge")
 
 @app.delete("/api/v1/admin/challenge/{task_id}")
-async def admin_delete_challenge(task_id: str):
+async def admin_delete_challenge(task_id: str, response: Response):
     """Удаление задачи администратором по идентификатору"""
     try:
+        response.headers["Access-Control-Allow-Origin"] = "*"
         response = requests.delete(f"{letoctf_api}/challenge/{task_id}")
         response.raise_for_status()
         return {"message": "Challenge deleted successfully"}
@@ -155,9 +166,10 @@ async def score_teams(response: Response):
         raise HTTPException(status_code=500, detail="Failed to fetch team scoreboard")
 
 @app.get("/api/v1/score/profile/{user_id}")
-async def get_user_score(user_id: str):
+async def get_user_score(user_id: str, response: Response):
     """Get user score by his id"""
     try:
+        response.headers["Access-Control-Allow-Origin"] = "*"
         user_data = requests.get(f"{letoctf_api}/challenge/{user_id}").json()
         return user_data
     except:
