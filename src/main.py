@@ -70,17 +70,6 @@ async def profile(user_id: str, response: Response):
     except:
         raise HTTPException(status_code=500, detail="Failed to fetch user profile")
 
-@app.get("/api/v1/user/token/{token}")
-async def admin_login(token, response: Response):
-    """Авторизация администратора с помощью токена"""
-    try:
-        response.headers["Access-Control-Allow-Origin"] = "*"
-        response = requests.get(f"{letoctf_api}/user/token/{token}")
-        response.raise_for_status()
-        admin = response.json()
-        return {'id': admin['data']['id']}
-    except requests.exceptions.HTTPError:
-        raise HTTPException(status_code=401, detail="Unauthorized")
 
 @app.get("/api/v1/challenge/{task_id}")
 async def admin_get_challenge(task_id: str, response: Response):
@@ -93,42 +82,6 @@ async def admin_get_challenge(task_id: str, response: Response):
         return challenge
     except requests.exceptions.HTTPError:
         raise HTTPException(status_code=404, detail="Challenge not found")
-
-@app.post("/api/v1/challenge")
-async def admin_create_challenge(challenge_data: dict, response: Response):
-    """Создание новой задачи администратором"""
-    try:
-        response.headers["Access-Control-Allow-Origin"] = "*"
-        response = requests.post(f"{letoctf_api}/challenge", json=challenge_data)
-        response.raise_for_status()
-        created_challenge = response.json()
-        return created_challenge
-    except requests.exceptions.HTTPError:
-        raise HTTPException(status_code=400, detail="Failed to create challenge")
-
-@app.put("/api/v1/challenge/{task_id}")
-async def admin_update_challenge(task_id: str, challenge_data: dict, response: Response):
-    """Обновление задачи администратором по идентификатору"""
-    try:
-        response.headers["Access-Control-Allow-Origin"] = "*"
-        response = requests.put(f"{letoctf_api}/challenge/{task_id}", json=challenge_data)
-        response.raise_for_status()
-        updated_challenge = response.json()
-        return updated_challenge
-    except requests.exceptions.HTTPError:
-        raise HTTPException(status_code=400, detail="Failed to update challenge")
-
-@app.delete("/api/v1/admin/challenge/{task_id}")
-async def admin_delete_challenge(task_id: str, response: Response):
-    """Удаление задачи администратором по идентификатору"""
-    try:
-        response.headers["Access-Control-Allow-Origin"] = "*"
-        response = requests.delete(f"{letoctf_api}/challenge/{task_id}")
-        response.raise_for_status()
-        return {"message": "Challenge deleted successfully"}
-    except requests.exceptions.HTTPError:
-        raise HTTPException(status_code=400, detail="Failed to delete challenge")
-
 
 @app.get("/api/v1/scoreboard/users")
 async def score_users(response: Response):
